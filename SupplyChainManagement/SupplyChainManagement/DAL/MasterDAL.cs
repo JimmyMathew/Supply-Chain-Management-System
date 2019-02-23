@@ -81,5 +81,85 @@ namespace SupplyChainManagement.DAL
                 return new Response { IsSuccess = false, Message = "Data deletion error. Contact Administrator" };
         }
         #endregion
+        #region ProductDetails
+        public List<ProductDetails> ReadProductDetails()
+        {
+            return entities.products.Select(x => new ProductDetails
+
+            {
+                id = x.id,
+                name = x.name,
+                description = x.description,
+                model = x.model,
+                sku = x.sku,
+                upc = x.upc,
+                price = x.price
+            }).OrderByDescending(x => x.id).ToList();
+        }
+        public Response SaveProductDetails(ProductDetails obj)
+        {
+            var IsExist = entities.products.Where(x => x.name == obj.name).ToList();
+            if (IsExist.Count == 0)
+            {
+                product itemObj = new product();
+                itemObj.id = obj.id;
+                itemObj.name = obj.name;
+                itemObj.description = obj.description;
+                itemObj.model = obj.model;
+                itemObj.sku = obj.sku;
+                itemObj.upc = obj.upc;
+                itemObj.price = obj.price;
+                itemObj.createdBy = "Admin";
+                itemObj.createdOn = DateTime.Now;
+                itemObj.updatedBy = "Admin";
+                itemObj.updatedOn = DateTime.Now;
+                entities.products.Add(itemObj);
+
+                entities.SaveChanges();
+                return new Response { IsSuccess = true, Message = "Product details added successfully" };
+            }
+            else
+                return new Response { IsSuccess = false, Message = "Product already exists" };
+
+        }
+        public Response UpdateProductDetails(ProductDetails obj)
+        {
+            var IsExist = entities.products.Where(x => x.id == obj.id).ToList();
+            if (IsExist.Count != 0)
+            {
+                var itemObj = entities.products.Where(x => x.id == obj.id).FirstOrDefault();
+                product itemObj1 = new product();
+                itemObj1.id = obj.id;
+                itemObj1.name = obj.name;
+                itemObj1.description = obj.description;
+                itemObj1.model = obj.model;
+                itemObj1.sku = obj.sku;
+                itemObj1.upc = obj.upc;
+                itemObj1.price = obj.price;
+                itemObj1.createdBy = "Admin";
+                itemObj1.createdOn = DateTime.Now;
+                itemObj1.updatedBy = "Admin";
+                itemObj1.updatedOn = DateTime.Now;
+                entities.products.Add(itemObj);
+                entities.SaveChanges();
+                return new Response { IsSuccess = true, Message = "Product details updated successfully " };
+            }
+            else
+                return new Response { IsSuccess = false, Message = "Product already exists" };
+
+        }
+        public Response DeleteProductDetails(int id)
+        {
+            var itemObj = entities.products.Where(x => x.id == id).FirstOrDefault();
+            if (itemObj != null)
+            {
+                entities.products.Remove(itemObj);
+                entities.SaveChanges();
+                return new Response { IsSuccess = false, Message = "Product details deleted successfully" };
+            }
+            else
+                return new Response { IsSuccess = false, Message = "Data deletion error. Contact Administrator" };
+        }
+        #endregion
     }
 }

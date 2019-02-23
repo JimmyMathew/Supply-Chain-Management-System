@@ -68,6 +68,49 @@ namespace SupplyChainManagement.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public ActionResult GetAllProducts()
+        {
+            List<ProductDetails> productDetails = new List<ProductDetails>();
+            productDetails = masterDal.ReadProductDetails().OrderByDescending(x => x.id).ToList();
+            return Json(productDetails, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult SaveProducts(string id, string name, string description, string model, string sku,string upc,string price)
+        {
+            if (id == "" || id == null)
+                id = "0";
+            Response res = new Response();
+            List<object> resultList = new List<object>();
+            var idFlag = Int32.Parse(id);
+            ProductDetails item = new ProductDetails();
+            item.name = name;
+          
+            item.id = idFlag;
+            item.name = name;
+            item.description = description;
+            item.model = model;
+            item.sku = sku;
+            item.upc = upc;
+            item.price = Double.Parse(price);
+            if (idFlag == 0)
+                res = masterDal.SaveProductDetails(item);
+            else
+                res = masterDal.UpdateProductDetails(item);
+            resultList.Add(res);
+            resultList.Add(GetAllProducts());
+            return Json(resultList, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult DeleteProducts(string id)
+        {
+            Response res = new Response();
+            List<object> resultList = new List<object>();
+            res = masterDal.DeleteProductDetails(Int32.Parse(id));
+            resultList.Add(res);
+            resultList.Add(GetAllProducts());
+            return Json(resultList, JsonRequestBehavior.AllowGet);
+
+        }
         #endregion
     }
 }
