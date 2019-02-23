@@ -76,7 +76,7 @@ namespace SupplyChainManagement.Controllers
             return Json(productDetails, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult SaveProducts(string id, string name, string description, string model, string sku,string upc,string price)
+        public ActionResult SaveProducts(string id, string name, string description, string model, string sku,string upc,string price,string quantity)
         {
             if (id == "" || id == null)
                 id = "0";
@@ -93,6 +93,7 @@ namespace SupplyChainManagement.Controllers
             item.sku = sku;
             item.upc = upc;
             item.price = Double.Parse(price);
+            item.quantity = int.Parse(quantity);
             if (idFlag == 0)
                 res = masterDal.SaveProductDetails(item);
             else

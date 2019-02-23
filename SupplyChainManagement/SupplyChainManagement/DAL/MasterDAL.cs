@@ -93,7 +93,8 @@ namespace SupplyChainManagement.DAL
                 model = x.model,
                 sku = x.sku,
                 upc = x.upc,
-                price = x.price
+                price = x.price,
+                quantity = x.quantity
             }).OrderByDescending(x => x.id).ToList();
         }
         public Response SaveProductDetails(ProductDetails obj)
@@ -109,6 +110,7 @@ namespace SupplyChainManagement.DAL
                 itemObj.sku = obj.sku;
                 itemObj.upc = obj.upc;
                 itemObj.price = obj.price;
+                itemObj.quantity = obj.quantity;
                 itemObj.createdBy = "Admin";
                 itemObj.createdOn = DateTime.Now;
                 itemObj.updatedBy = "Admin";
@@ -136,6 +138,7 @@ namespace SupplyChainManagement.DAL
                 itemObj1.sku = obj.sku;
                 itemObj1.upc = obj.upc;
                 itemObj1.price = obj.price;
+                itemObj.quantity = obj.quantity;
                 itemObj1.createdBy = "Admin";
                 itemObj1.createdOn = DateTime.Now;
                 itemObj1.updatedBy = "Admin";
