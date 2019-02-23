@@ -1,6 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
   <EntityContainerMapping StorageEntityContainer="scmModelStoreContainer" CdmEntityContainer="scmEntities">
+    <EntitySetMapping Name="products">
+      <EntityTypeMapping TypeName="scmModel.product">
+        <MappingFragment StoreEntitySet="products">
+          <ScalarProperty Name="updatedOn" ColumnName="updatedOn" />
+          <ScalarProperty Name="updatedBy" ColumnName="updatedBy" />
+          <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+          <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+          <ScalarProperty Name="price" ColumnName="price" />
+          <ScalarProperty Name="upc" ColumnName="upc" />
+          <ScalarProperty Name="sku" ColumnName="sku" />
+          <ScalarProperty Name="model" ColumnName="model" />
+          <ScalarProperty Name="description" ColumnName="description" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="id" ColumnName="id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="users">
       <EntityTypeMapping TypeName="scmModel.user">
         <MappingFragment StoreEntitySet="users">

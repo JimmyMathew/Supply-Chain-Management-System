@@ -25,6 +25,7 @@ namespace SupplyChainManagement.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<product> products { get; set; }
         public virtual DbSet<user> users { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\Models\SCM.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Jimmy\Fusion Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\Models\SCM.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.
