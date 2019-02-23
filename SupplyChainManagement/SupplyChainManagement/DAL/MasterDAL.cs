@@ -17,21 +17,20 @@ namespace SupplyChainManagement.DAL
             {
                 id = x.id,
                 name = x.name,
-                usename = x.usename,
+                username = x.username,
                 password = x.password,
                 role = x.role
             }).OrderByDescending(x => x.id).ToList();
         }
         public Response SaveUserDetails(UserDetails obj)
         {
-            List<UserDetails> userList = new List<UserDetails>();
-            var IsExist = entities.users.Where(x => x.usename == obj.usename).ToList();
+            var IsExist = entities.users.Where(x => x.username == obj.username).ToList();
             if (IsExist.Count == 0)
             {
                 user itemObj = new user();
                 itemObj.id = obj.id;
                 itemObj.name = obj.name;
-                itemObj.name = obj.name;
+                itemObj.username = obj.username;
                 itemObj.password = obj.password;
                 itemObj.role = obj.role;
                 itemObj.createdBy = "Admin";
@@ -49,14 +48,13 @@ namespace SupplyChainManagement.DAL
         }
         public Response UpdateUserDetails(UserDetails obj)
         {
-            List<UserDetails> userList = new List<UserDetails>();
             var IsExist = entities.users.Where(x => x.id == obj.id).ToList();
             if (IsExist.Count != 0)
             {
                 var itemObj = entities.users.Where(x => x.id == obj.id).FirstOrDefault();
                 itemObj.id = obj.id;
                 itemObj.name = obj.name;
-                itemObj.usename = obj.usename;
+                itemObj.username = obj.username;
                 itemObj.password = obj.password;
                 itemObj.role = obj.role;
                 itemObj.createdBy = "Admin";

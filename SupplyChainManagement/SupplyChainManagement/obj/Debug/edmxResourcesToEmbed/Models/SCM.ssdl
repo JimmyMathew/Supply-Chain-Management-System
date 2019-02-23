@@ -6,7 +6,7 @@
     </Key>
     <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="name" Type="varchar" MaxLength="100" />
-    <Property Name="usename" Type="varchar" MaxLength="100" />
+    <Property Name="username" Type="varchar" MaxLength="100" />
     <Property Name="password" Type="varchar" MaxLength="100" />
     <Property Name="role" Type="varchar" MaxLength="100" />
     <Property Name="createdBy" Type="varchar" MaxLength="100" />

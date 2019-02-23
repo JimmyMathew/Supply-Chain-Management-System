@@ -55,7 +55,6 @@
     <script src="~/Scripts/buttons.print.min.js"></script>
     <script src="~/Scripts/dataTables.buttons.min.js"></script>
     <script src="~/Scripts/shortcut.js"></script>
-    <script src="../Scripts/WeighmentScripts.js"></script>
     <style>
         li:hover {
             background-color: #9c27b0;
@@ -145,13 +144,13 @@
                 <div class="sidebar-wrapper">
                     <ul class="nav">
                         @*@{ var role = System.Web.HttpContext.Current.Session["role"].ToString();}*@
-                        <li>
+                        @*<li>
                             <a href="/Weighment/Index">
                                 <img src="~/Images/blur_circular.png" />
                                 Weighment
                             </a>
-                        </li>
-                        <li>
+                        </li>*@
+                        @*<li>
                             <a href="/Weighment/History">
                                 <img src="~/Images/history.png" />
                                 History
@@ -188,18 +187,18 @@
                                 <img src="~/Images/bus.png" />
                                 Vehicles
                             </a>
-                        </li>
+                        </li>*@
 
                         @*@{ if (role == "Admin")*@
                          @*{*@
 
-                            <li>
+                            @*<li>
                                 <a href="/Master/Item">
                                     <img src="~/Images/giftcard.png" />
                                     Items
 
                                 </a>
-                            </li>
+                            </li>*@
                             <li>
                                 <a href="/Master/User">
                                     <img src="~/Images/accounts.png" />
