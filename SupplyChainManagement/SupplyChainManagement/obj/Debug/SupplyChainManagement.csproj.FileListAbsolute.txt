@@ -27,6 +27,8 @@ F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChai
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\System.Web.WebPages.dll
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\System.Web.WebPages.Razor.dll
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\WebGrease.dll
+F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\EntityFramework.xml
+F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\EntityFramework.SqlServer.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\System.Web.Helpers.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\System.Web.Mvc.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\System.Web.Optimization.xml
@@ -36,8 +38,6 @@ F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChai
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\System.Web.WebPages.Razor.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\Antlr3.Runtime.pdb
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\Newtonsoft.Json.xml
-F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\EntityFramework.xml
-F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\EntityFramework.SqlServer.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\Microsoft.AspNet.Identity.Core.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\Microsoft.AspNet.Identity.Owin.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\Microsoft.AspNet.Identity.EntityFramework.xml
@@ -52,3 +52,6 @@ F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChai
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\Microsoft.Owin.Security.MicrosoftAccount.xml
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\obj\Debug\SupplyChainManagement.dll
 F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\obj\Debug\SupplyChainManagement.pdb
+F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\MySql.Data.Entity.EF6.dll
+F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\bin\MySql.Data.Entity.EF6.xml
+F:\Work Projects\Supply-Chain-Management-System\SupplyChainManagement\SupplyChainManagement\obj\Debug\SupplyChainManagement.csprojResolveAssemblyReference.cache
