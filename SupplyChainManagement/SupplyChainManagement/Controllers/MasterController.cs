@@ -62,5 +62,12 @@ namespace SupplyChainManagement.Controllers
 
         }
         #endregion
+
+        #region Products
+        public ActionResult Products()
+        {
+            return View();
+        }
+        #endregion
     }
 }

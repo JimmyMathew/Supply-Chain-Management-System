@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body .modal-open .modal {
+        display: flex !important;
+        height: 100%;
+    }
+
+        body.modal-open .modal .modal-dialog {
+            margin: auto;
+        }
+</style>
+<div>
+    <a class="navbar-brand" href="#"> Users </a>
+    <button type="submit" class="btn btn-primary pull-right" onclick="AddUser()">Add</button>
+</div>
+@*Table*@
+<div class="content" style="margin-top:-30px;">
+    <div class="container-fluid">
+        <div class="row">
+            <div style="width:1089px; overflow: auto;">
+                <table id="usergrid" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;"> Prod ID</th>
+                            <th style="width:15%;"> Product Name</th>
+                            <th style="width:15%;"> Module </th>
+                            <th style="width:15%;">SKU</th>
+                            <th style="width:15%;">UPS</th>
+                            <th style="width:15%;">Price</th>
+                            <th style="width:15%;">Quantity</th>
+                            
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<h2>Products</h2>
+
