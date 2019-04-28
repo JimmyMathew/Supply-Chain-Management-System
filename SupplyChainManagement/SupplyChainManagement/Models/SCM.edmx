@@ -5,6 +5,43 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="scmModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.5" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="deliveryunit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="100" />
+          <Property Name="distributorid" Type="bigint" />
+          <Property Name="distributorname" Type="varchar" MaxLength="100" />
+          <Property Name="productid" Type="bigint" />
+          <Property Name="productname" Type="varchar" MaxLength="100" />
+          <Property Name="quantity" Type="int" />
+          <Property Name="createdOn" Type="date" />
+          <Property Name="isactive" Type="bool" />
+        </EntityType>
+        <EntityType Name="distributorunit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="100" />
+          <Property Name="distributorId" Type="bigint" />
+          <Property Name="productname" Type="varchar" MaxLength="100" />
+          <Property Name="productid" Type="bigint" />
+          <Property Name="quantity" Type="int" />
+          <Property Name="createdOn" Type="date" />
+        </EntityType>
+        <EntityType Name="manufacturerunit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="100" />
+          <Property Name="productname" Type="varchar" MaxLength="500" />
+          <Property Name="productid" Type="bigint" />
+          <Property Name="quantity" Type="int" />
+          <Property Name="createdOn" Type="date" />
+        </EntityType>
         <EntityType Name="products">
           <Key>
             <PropertyRef Name="id" />
@@ -22,6 +59,19 @@
           <Property Name="updatedBy" Type="varchar" MaxLength="100" />
           <Property Name="updatedOn" Type="date" />
         </EntityType>
+        <EntityType Name="stakeholders">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="100" />
+          <Property Name="location" Type="varchar" MaxLength="100" />
+          <Property Name="type" Type="varchar" MaxLength="100" />
+          <Property Name="createdBy" Type="varchar" MaxLength="100" />
+          <Property Name="createOn" Type="date" />
+          <Property Name="updateBy" Type="varchar" MaxLength="100" />
+          <Property Name="updateOn" Type="date" />
+        </EntityType>
         <EntityType Name="users">
           <Key>
             <PropertyRef Name="id" />
@@ -37,7 +87,11 @@
           <Property Name="updatedOn" Type="date" />
         </EntityType>
         <EntityContainer Name="scmModelStoreContainer">
+          <EntitySet Name="deliveryunit" EntityType="Self.deliveryunit" Schema="scm" store:Type="Tables" />
+          <EntitySet Name="distributorunit" EntityType="Self.distributorunit" Schema="scm" store:Type="Tables" />
+          <EntitySet Name="manufacturerunit" EntityType="Self.manufacturerunit" Schema="scm" store:Type="Tables" />
           <EntitySet Name="products" EntityType="Self.products" Schema="scm" store:Type="Tables" />
+          <EntitySet Name="stakeholders" EntityType="Self.stakeholders" Schema="scm" store:Type="Tables" />
           <EntitySet Name="users" EntityType="Self.users" Schema="scm" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -45,9 +99,50 @@
     <edmx:ConceptualModels>
       <Schema Namespace="scmModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="scmEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="deliveryunits" EntityType="scmModel.deliveryunit" />
+          <EntitySet Name="distributorunits" EntityType="scmModel.distributorunit" />
+          <EntitySet Name="manufacturerunits" EntityType="scmModel.manufacturerunit" />
           <EntitySet Name="products" EntityType="scmModel.product" />
+          <EntitySet Name="stakeholders" EntityType="scmModel.stakeholder" />
           <EntitySet Name="users" EntityType="scmModel.user" />
         </EntityContainer>
+        <EntityType Name="deliveryunit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="distributorid" Type="Int64" />
+          <Property Name="distributorname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="productid" Type="Int64" />
+          <Property Name="productname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="quantity" Type="Int32" />
+          <Property Name="createdOn" Type="DateTime" />
+          <Property Name="isactive" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="distributorunit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="distributorId" Type="Int64" />
+          <Property Name="productname" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="productid" Type="Int64" />
+          <Property Name="quantity" Type="Int32" />
+          <Property Name="createdOn" Type="DateTime" />
+        </EntityType>
+        <EntityType Name="manufacturerunit">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="productname" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="productid" Type="Int64" />
+          <Property Name="quantity" Type="Int32" />
+          <Property Name="createdOn" Type="DateTime" />
+        </EntityType>
         <EntityType Name="product">
           <Key>
             <PropertyRef Name="id" />
@@ -65,6 +160,19 @@
           <Property Name="updatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="updatedOn" Type="DateTime" />
         </EntityType>
+        <EntityType Name="stakeholder">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="location" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="type" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="createdBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="createOn" Type="DateTime" />
+          <Property Name="updateBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="updateOn" Type="DateTime" />
+        </EntityType>
         <EntityType Name="user">
           <Key>
             <PropertyRef Name="id" />
@@ -79,12 +187,52 @@
           <Property Name="updatedBy" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="updatedOn" Type="DateTime" />
         </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="scmModelStoreContainer" CdmEntityContainer="scmEntities">
+          <EntitySetMapping Name="deliveryunits">
+            <EntityTypeMapping TypeName="scmModel.deliveryunit">
+              <MappingFragment StoreEntitySet="deliveryunit">
+                <ScalarProperty Name="isactive" ColumnName="isactive" />
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="productname" ColumnName="productname" />
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="distributorname" ColumnName="distributorname" />
+                <ScalarProperty Name="distributorid" ColumnName="distributorid" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="distributorunits">
+            <EntityTypeMapping TypeName="scmModel.distributorunit">
+              <MappingFragment StoreEntitySet="distributorunit">
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="productname" ColumnName="productname" />
+                <ScalarProperty Name="distributorId" ColumnName="distributorId" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="manufacturerunits">
+            <EntityTypeMapping TypeName="scmModel.manufacturerunit">
+              <MappingFragment StoreEntitySet="manufacturerunit">
+                <ScalarProperty Name="createdOn" ColumnName="createdOn" />
+                <ScalarProperty Name="quantity" ColumnName="quantity" />
+                <ScalarProperty Name="productid" ColumnName="productid" />
+                <ScalarProperty Name="productname" ColumnName="productname" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="products">
             <EntityTypeMapping TypeName="scmModel.product">
               <MappingFragment StoreEntitySet="products">
@@ -98,6 +246,20 @@
                 <ScalarProperty Name="sku" ColumnName="sku" />
                 <ScalarProperty Name="model" ColumnName="model" />
                 <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="stakeholders">
+            <EntityTypeMapping TypeName="scmModel.stakeholder">
+              <MappingFragment StoreEntitySet="stakeholders">
+                <ScalarProperty Name="updateOn" ColumnName="updateOn" />
+                <ScalarProperty Name="updateBy" ColumnName="updateBy" />
+                <ScalarProperty Name="createOn" ColumnName="createOn" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="location" ColumnName="location" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>

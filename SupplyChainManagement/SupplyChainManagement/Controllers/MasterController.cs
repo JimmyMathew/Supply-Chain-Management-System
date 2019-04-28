@@ -12,12 +12,14 @@ namespace SupplyChainManagement.Controllers
     {
         // GET: Master
         MasterDAL masterDal = new MasterDAL();
+        [LoginCheckAttribute]
         public ActionResult Index()
         {
             return View();
         }
 
         #region User
+        [LoginCheckAttribute]
         public ActionResult User()
         {
             return View();
@@ -64,6 +66,7 @@ namespace SupplyChainManagement.Controllers
         #endregion
 
         #region Products
+        [LoginCheckAttribute]
         public ActionResult Products()
         {
             return View();
@@ -85,9 +88,7 @@ namespace SupplyChainManagement.Controllers
             var idFlag = Int32.Parse(id);
             ProductDetails item = new ProductDetails();
             item.name = name;
-          
             item.id = idFlag;
-            item.name = name;
             item.description = description;
             item.model = model;
             item.sku = sku;
@@ -109,6 +110,51 @@ namespace SupplyChainManagement.Controllers
             res = masterDal.DeleteProductDetails(Int32.Parse(id));
             resultList.Add(res);
             resultList.Add(GetAllProducts());
+            return Json(resultList, JsonRequestBehavior.AllowGet);
+
+        }
+        #endregion
+        #region StakeHolders
+        [LoginCheckAttribute]
+        public ActionResult Holders()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult GetAllHolders()
+        {
+            List<HolderDetails> holderDetails = new List<HolderDetails>();
+            holderDetails = masterDal.ReadHolderDetails().OrderByDescending(x => x.id).ToList();
+            return Json(holderDetails, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult SaveHolders(string id, string name, string location, string type)
+        {
+            if (id == "" || id == null)
+                id = "0";
+            Response res = new Response();
+            List<object> resultList = new List<object>();
+            var idFlag = Int32.Parse(id);
+            HolderDetails item = new HolderDetails();
+            item.name = name;
+            item.id = idFlag;
+            item.type = type;
+            item.location = location; 
+            if (idFlag == 0)
+                res = masterDal.SaveHolderDetails(item);
+            else
+                res = masterDal.UpdateHolderDetails(item);
+            resultList.Add(res);
+            resultList.Add(GetAllHolders());
+            return Json(resultList, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult DeleteHolders(string id)
+        {
+            Response res = new Response();
+            List<object> resultList = new List<object>();
+            res = masterDal.DeleteHolderDetails(Int32.Parse(id));
+            resultList.Add(res);
+            resultList.Add(GetAllHolders());
             return Json(resultList, JsonRequestBehavior.AllowGet);
 
         }

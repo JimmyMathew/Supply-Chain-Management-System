@@ -1,0 +1,244 @@
+﻿
+@{
+    ViewBag.Title = "Holders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body .modal-open .modal {
+        display: flex !important;
+        height: 100%;
+    }
+
+        body.modal-open .modal .modal-dialog {
+            margin: auto;
+        }
+</style>
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            url: "/Master/GetAllHolders",
+            success: function (result) {
+                refreshgrid(result, null);
+            },
+            error: function (data) {
+                ShowNotification('bottom', 'right', "Error retrieving details");
+            }
+        });
+
+    });
+    //Data table methods 
+    var table;
+
+    function refreshgrid(itemlist, message) {
+
+        if (table != undefined && table != null)
+            table.destroy();
+
+        table = $('#usergrid').DataTable({
+            data: itemlist,
+            columns: GetColumns(),
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            "bDestroy": true,
+            select: false,
+            lengthChange: false,
+            "order": [[0, "desc"]],
+            //"scroll": "100"
+            //scrollY: '65vh',
+            //scrollCollapse: true,
+
+        });
+
+
+        if (message != undefined && message != "" && message != null && message && "undefined")
+            ShowNotification('bottom', 'right', message);
+    }
+
+    function GetColumns() {
+        var columns = [];
+        columns = [
+                        {
+                            data: "id",
+                            "render": function (data, type, row, meta) {
+                                var a = "";
+                                a = '<a href="#" onclick="EditData(\''
+                                + row.name + '\',\''
+                                + row.type + '\',\''
+                                + row.location + '\',\''
+                                + row.id + '\')">Edit</a> <a href="#"  onclick="DeleteData(\'' + row.id
+                                + '\')">Delete</a>';
+                                return a;
+                            }
+                        },
+
+                            { data: "name" },
+                            { data: "type" },
+                            { data: "location" }
+        ];
+        return columns;
+    }
+
+    function AddHolders() {
+        $("#name").val("");
+        $("#type").val("");
+        $("#location").val("");
+        $("#id").val("");
+        $("#userModal").modal('show');
+
+    }
+
+
+    function SaveHolders() {
+        var name = $("#name").val();
+        var type = $("#type").val();
+        var location = $("#location").val();
+        var id = $("#id").val();
+        if (name == null || name == undefined || name == "") {
+            alert("Please enter the stake holder name");
+            return false;
+        }
+        else if (type == null || type == undefined || type == "") {
+            alert("Please select the type");
+            return false;
+        }
+        else if (location == null || location == undefined || location == "") {
+            alert("Please enter the location");
+            return false;
+        }
+
+        else {
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                cache: false,
+                type: 'POST',
+                data: JSON.stringify({ "name": name, "type": type, "location": location, "id": id }),
+                url: "/Master/SaveHolders",
+                success: function (result) {
+                    $("#userModal").modal('hide');
+                    refreshgrid(result[1].Data, result[0].Message);
+
+                },
+                error: function (data) {
+                    ShowNotification('bottom', 'right', "Error. Contact Administrator");
+                }
+            });
+        }
+    }
+    function EditData(name, type, location, id) {
+        $("#userModal").modal('show');
+        $("#name").val(name);
+        $("#type").val(type);
+        $("#location").val(location);
+        $("#id").val(id);
+    }
+    function DeleteData(id) {
+
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            data: JSON.stringify({ "id": id }),
+            url: "/Master/DeleteHolders",
+            success: function (result) {
+                //refreshgrid(result[1].Data);
+                refreshgrid(result[1].Data, result[0].Message);
+                //ShowNotification('bottom', 'right', result[0].Message);
+            },
+
+        });
+
+    }
+</script>
+
+<h3>Stake Holders</h3>
+@*navigation*@
+<div>
+    <button type="submit" class="btn btn-primary pull-right" onclick="AddHolders()">Add</button>
+</div>
+
+@*Table*@
+<div class="content" style="margin-top:-30px;">
+    <div class="container-fluid">
+        <div class="row" style="margin-left:-65px;">
+            <div style="width:1048px; overflow: auto;">
+                <table id="usergrid" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:33%;"> Action</th>
+                            <th style="width:33%;"> Name</th>
+                            <th style="width:33%;">Type</th>
+                            <th style="width:33%;">Location</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@*Popup modal*@
+<div id="userModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="submit" class="close" aria-hidden="true" style="width:20px;"><span style="font-size:20px;">X</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title">Add/Edit Stake Holders</h4>
+                        <p class="category">Complete stake holder details</p>
+                    </div>
+                    <div class="card-content">
+                        <form>
+                            <input id="id" type="hidden" class="form-control">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Name</label>
+                                        <input id="name" type="text" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Type</label>
+                                        <select id="type" class="form-control">
+                                            <option value="Manufacturer">Manufacturer</option>
+                                            <option value="Distributor">Distributor</option>
+                                            <option value="Customer">Customer</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Location</label>
+                                        <input id="location" type="text" class="form-control">
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            @*<button type="button" class="btn btn-default" data-dismiss="modal" tabindex="3">Close</button>*@
+                            @*<button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Close</button>*@
+                            <button type="submit" class="btn btn-primary pull-right" onclick="SaveHolders()">Save</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,248 @@
+﻿
+@{
+    ViewBag.Title = "Distributor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+    $(document).ready(function () {
+        var productstr = "";
+        var customerstr = "";
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            url: "/Manufacturer/GetAllDistributorDetails",
+            success: function (result) {
+                refreshgrid(result[0], null);
+                
+
+                //var oproductList = document.getElementById("oproductList");
+                //oproductList.innerHTML = productstr;
+
+                for (var i = 0; i < result[1].length; ++i) {
+                    customerstr += '<option data-value="' + result[1][i].id + '"value="' + result[1][i].name + '"/>'; // Storing options in variable
+                }
+                var customerList = document.getElementById("customerList");
+                customerList.innerHTML = customerstr;
+
+                for (var i = 0; i < result[2].length; ++i) {
+                    productstr += '<option data-value="' + result[2][i].id + '"value="' + result[2][i].name + '"/>'; // Storing options in variable
+                }
+
+                var productList = document.getElementById("productList");
+                productList.innerHTML = productstr;
+            },
+            error: function (data) {
+                ShowNotification('bottom', 'right', "Error retrieving details");
+            }
+        });
+    });
+    //Data table methods 
+    var table;
+
+    function refreshgrid(itemlist, message) {
+
+        if (table != undefined && table != null)
+            table.destroy();
+
+        table = $('#distributorgrid').DataTable({
+            data: itemlist,
+            columns: GetColumns(),
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            "bDestroy": true,
+            select: false,
+            lengthChange: false,
+            "order": [[0, "desc"]],
+            //"scroll": "100"
+            //scrollY: '65vh',
+            //scrollCollapse: true,
+
+        });
+
+        if (message != undefined && message != "" && message != null && message && "undefined")
+            ShowNotification('bottom', 'right', message);
+    }
+    function GetColumns() {
+        var columns = [];
+        columns = [
+            {
+                data: "id",
+             
+            },
+
+            { data: "name" },
+            { data: "distributorId" },
+            { data: "productname" },
+            { data: "productid" },
+            { data: "quantity" },
+            { data: "createdOn" },
+
+            {
+                data: "id",
+                "render": function (data, type, row, meta) {
+                    var a = "";
+                    a = '<a href="#" onclick="TransferData(\''
+                        + row.name + '\',\''
+                        + row.distributorId + '\',\''
+                        + row.productname + '\',\''
+                        + row.productid + '\',\''
+                        + row.quantity + '\',\''
+                        + row.id + '\')">Transfer</a>';
+                    return a;
+                }
+            },
+        ];
+        return columns;
+    }
+    function TransferData(name, distributorId, productname, productid, quantity, id) {
+        $("#distributorTransferModal").modal('show');
+        $("#name").val(name);
+        $("#productname").val(productname);
+        $("#quantity").val(quantity);
+        $("#distributorId").val(distributorId);
+        $("#productid").val(productid);
+        $("#customername").val("");
+        $("#id").val(id);
+    }
+    function TransferDistributor() {
+        var name = $("#customername").val();
+        var productname = $("#productname").val();
+        var productid = $('#productList [value="' + productname + '"]').data('value');
+        var customername = $("#customername").val();
+        var distributorname = $("#name").val();
+        var distributorid = $("#distributorId").val();
+        var quantity = $("#quantity").val();
+        var id = $("#id").val();
+
+        if (customername == null || customername == undefined || customername == "") {
+            alert("Please select the customer to transfer");
+            return false;
+        }
+        else {
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                cache: false,
+                type: 'POST',
+                data: JSON.stringify({ "name": name, "productname": productname, "productid": productid, "quantity": quantity, "id": id, "distributorname": distributorname, "distributorid": distributorid }),
+                url: "/Manufacturer/TransferManufacturers",
+                success: function (result) {
+                    $("#distributorTransferModal").modal('hide');
+                    refreshgrid(result[1].Data[0], result[0].Message);
+                },
+                error: function (data) {
+                    ShowNotification('bottom', 'right', "Error. Contact Administrator");
+                }
+            });
+        }
+    }
+</script>
+<h3>Distributor Unit</h3>
+
+@*Table*@
+<div class="content" style="margin-top:-30px;">
+    <div class="container-fluid">
+        <div class="row" style="margin-left:-65px;">
+            <div style="width:1048px; overflow: auto;">
+                <table id="distributorgrid" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:10%;"> ID</th>
+                            <th style="width:25%;">Distributor Name</th>
+                            <th style="width:15%;">Distributor ID</th>
+                            <th style="width:20%;">Product Name</th>
+                            <th style="width:20%;">Product ID</th>
+                            <th style="width:15%;">Quantity</th>
+                            <th style="width:35%;">Date</th>
+                            <th style="width:35%;"> Transfer</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="distributorTransferModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="submit" class="close" aria-hidden="true" style="width:20px;"><span style="font-size:20px;">X</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title">Transfer Material</h4>
+                        <p class="category">Select the customer to transfer</p>
+                    </div>
+                    <div class="card-content">
+                        <form>
+                            <input id="id" type="hidden" class="form-control">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Distributor Name</label>
+                                        <input id="name" type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Distributor ID</label>
+                                        <input id="distributorId" type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Product</label>
+                                        <input id="productname" class="form-control" list="productList" disabled />
+                                        <datalist id="productList"></datalist>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Product ID</label>
+                                        <input id="productid" type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating">
+                                        <label>Quantity</label>
+                                        <input id="quantity" type="number" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Customer</label>
+                                        <input id="customername" class="form-control" list="customerList" />
+                                        <datalist id="customerList"></datalist>
+                                    </div>
+                                </div>
+
+                            </div>
+                            @*<button type="button" class="btn btn-default" data-dismiss="modal" tabindex="3">Close</button>*@
+                            @*<button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Close</button>*@
+                            <button type="submit" class="btn btn-primary pull-right" onclick="TransferDistributor()">Transfer</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

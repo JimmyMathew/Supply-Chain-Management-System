@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,6 +23,7 @@
     <IISExpressUseClassicPipelineMode />
     <Use64BitIISExpress />
     <UseGlobalApplicationHostFile />
+    <TypeScriptToolsVersion>3.1</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -168,15 +170,30 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LoginCheckAttribute.cs" />
+    <Compile Include="Controllers\ManufacturerController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
     <Compile Include="DAL\MasterDAL.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\deliveryunit.cs">
+      <DependentUpon>SCM.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\distributorunit.cs">
+      <DependentUpon>SCM.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DeliveryUnitDetails.cs" />
+    <Compile Include="Models\DistributorUnitDetails.cs" />
+    <Compile Include="Models\ManufacturerUnitDeatils.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\manufacturerunit.cs">
+      <DependentUpon>SCM.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\product.cs">
       <DependentUpon>SCM.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\HolderDetails.cs" />
     <Compile Include="Models\Response.cs" />
     <Compile Include="Models\SCM.Context.cs">
       <AutoGen>True</AutoGen>
@@ -192,6 +209,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SCM.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\stakeholder.cs">
+      <DependentUpon>SCM.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\user.cs">
       <DependentUpon>SCM.tt</DependentUpon>
@@ -213,7 +233,6 @@
     <Content Include="Content\material-dashboard.css" />
     <Content Include="Content\material-google.css" />
     <Content Include="favicon.ico" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Images\accounts.png" />
@@ -250,8 +269,6 @@
     <Content Include="Scripts\ai.0.22.9-build00167.min.js" />
     <Content Include="Scripts\arrive.min.js" />
     <Content Include="Scripts\bootstrap-notify.js" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <EntityDeploy Include="Models\SCM.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>SCM.Designer.cs</LastGenOutput>
@@ -259,15 +276,15 @@
     <Content Include="Models\SCM.edmx.diagram">
       <DependentUpon>SCM.edmx</DependentUpon>
     </Content>
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\buttons.flash.min.js" />
     <Content Include="Scripts\buttons.html5.min.js" />
     <Content Include="Scripts\buttons.print.min.js" />
     <Content Include="Scripts\chartist.min.js" />
     <Content Include="Scripts\dataTables.buttons.min.js" />
     <Content Include="Scripts\demo.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
+    <None Include="Properties\PublishProfiles\SCMProfile.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-3.2.1.min.js" />
@@ -299,24 +316,28 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Master\User.cshtml" />
     <Content Include="Views\Master\Products.cshtml" />
+    <Content Include="Views\Master\Holders.cshtml" />
+    <Content Include="Views\Manufacturer\Index.cshtml" />
+    <Content Include="Views\Manufacturer\Distributor.cshtml" />
+    <Content Include="Views\Manufacturer\Delivery.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\esm\" />
+    <Folder Include="Scripts\umd\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <PropertyGroup>
@@ -324,6 +345,7 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">

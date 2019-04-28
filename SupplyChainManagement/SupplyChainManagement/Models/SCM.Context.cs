@@ -25,7 +25,11 @@ namespace SupplyChainManagement.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<deliveryunit> deliveryunits { get; set; }
+        public virtual DbSet<distributorunit> distributorunits { get; set; }
+        public virtual DbSet<manufacturerunit> manufacturerunits { get; set; }
         public virtual DbSet<product> products { get; set; }
+        public virtual DbSet<stakeholder> stakeholders { get; set; }
         public virtual DbSet<user> users { get; set; }
     }
 }

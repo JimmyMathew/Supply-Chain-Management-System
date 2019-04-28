@@ -1,0 +1,414 @@
+﻿
+@{
+    ViewBag.Title = "Manufacturer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    body .modal-open .modal {
+        display: flex !important;
+        height: 100%;
+    }
+
+        body.modal-open .modal .modal-dialog {
+            margin: auto;
+        }
+    table {
+        margin: 0 auto;
+        width: 100%;
+        clear: both;
+        border-collapse: collapse;
+        table-layout: fixed;
+        // ***********add this word-wrap:break-word;
+        // ***********and this
+    }
+</style>
+<script>
+    var actualQuantity = 0;
+    $(document).ready(function () {
+        var productstr = "";
+        var diststr = "";
+        var manuStr = "";
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            url: "/Manufacturer/GetAllManufacturerDetails",
+            success: function (result) {
+                refreshgrid(result[0], null);
+                for (var i = 0; i < result[1].length; ++i) {
+                    productstr += '<option data-value="' + result[1][i].id +'"value="' + result[1][i].name + '"/>'; // Storing options in variable
+                }
+
+                var productList = document.getElementById("productList");
+                productList.innerHTML = productstr;
+
+                var oproductList = document.getElementById("oproductList");
+                oproductList.innerHTML = productstr;
+
+                for (var i = 0; i < result[2].length; ++i) {
+                    diststr += '<option data-value="' + result[2][i].id + '"value="' + result[2][i].name + '"/>'; // Storing options in variable
+                }
+                var odistributorList = document.getElementById("odistributorList");
+                odistributorList.innerHTML = diststr;
+
+                for (var i = 0; i < result[2].length; ++i) {
+                    manuStr += '<option data-value="' + result[3][i].id + '"value="' + result[3][i].name + '"/>'; // Storing options in variable
+                }
+                var manufacturertList = document.getElementById("manufacturertList");
+                manufacturertList.innerHTML = manuStr;
+            },
+            error: function (data) {
+                ShowNotification('bottom', 'right', "Error retrieving details");
+            }
+        });
+    });
+    //Data table methods 
+    var table;
+
+    function refreshgrid(itemlist, message) {
+
+        if (table != undefined && table != null)
+            table.destroy();
+
+        table = $('#manufacturergrid').DataTable({
+            data: itemlist,
+            columns: GetColumns(),
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            "bDestroy": true,
+            select: false,
+            lengthChange: false,
+            "order": [[0, "desc"]],
+            //"scroll": "100"
+            //scrollY: '65vh',
+            //scrollCollapse: true,
+
+        });
+
+        if (message != undefined && message != "" && message != null && message && "undefined")
+            ShowNotification('bottom', 'right', message);
+    }
+    function GetColumns() {
+        var columns = [];
+        columns = [
+            {
+                data: "id",
+                "render": function (data, type, row, meta) {
+                    var a = "";
+                    a = '<a href="#" onclick="EditData(\''
+                        + row.name + '\',\''
+                        + row.productname + '\',\''
+                        + row.productid + '\',\''
+                        + row.quantity + '\',\''
+                        + row.id + '\')">Edit</a> <a href="#"  onclick="DeleteData(\'' + row.id
+                        + '\')">Delete</a>';
+                    return a;
+                }
+            },
+
+            { data: "name" },
+            { data: "productname" },
+            { data: "productid" },
+            { data: "quantity" },
+            { data: "createdOn" },
+            
+            {
+                data: "id",
+                "render": function (data, type, row, meta) {
+                    var a = "";
+                    a = '<a href="#" onclick="OrderData(\''
+                        + row.name + '\',\''
+                        + row.productname + '\',\''
+                        + row.productid + '\',\''
+                        + row.quantity + '\',\''
+                        + row.id + '\')">Order</a>';
+                    return a;
+                }
+            },
+        ];
+        return columns;
+    }
+    function AddManufacturer() {
+        $("#name").val("");
+        $("#productname").val("");
+        $("#productid").val("");
+        $("#quantity").val("");
+        $("#manufacturerModal").modal('show');
+
+    }
+    function SaveManufacturer() {
+        
+        var name = $("#name").val();
+        var productname = $("#productname").val();
+        var productid = $('#productList [value="' + productname + '"]').data('value');
+       
+        var quantity = $("#quantity").val();
+    
+        var id = $("#id").val();
+        if (name == null || name == undefined || name == "") {
+            alert("Please enter the manufacturer name");
+            return false;
+        }
+        else if (productname == null || productname == undefined || productname == "") {
+            alert("Please select the product");
+            return false;
+        }
+        else if (quantity == null || quantity == undefined || quantity == "") {
+            alert("Please enter the quantity");
+            return false;
+        }
+        else {
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                cache: false,
+                type: 'POST',
+                data: JSON.stringify({ "name": name, "productname": productname, "productid": productid, "quantity": quantity, "id": id }),
+                url: "/Manufacturer/SaveManufacturers",
+                success: function (result) {
+                    $("#manufacturerModal").modal('hide');
+                    refreshgrid(result[1].Data[0], result[0].Message);
+
+                },
+                error: function (data) {
+                    ShowNotification('bottom', 'right', "Error. Contact Administrator");
+                }
+            });
+        }
+    }
+    function EditData(name, productname, productid, quantity, id) {
+
+        $("#manufacturerModal").modal('show');
+        $("#name").val(name);
+        $("#productname").val(productname);
+        $("#quantity").val(quantity);
+        $("#productid").val(productid);
+        $("#id").val(id);
+    }
+    function OrderData(name, productname, productid, quantity, id) {
+        actualQuantity = quantity;
+        $("#manufacturerOrderModal").modal('show');
+        $("#oname").val(name);
+        $("#oproductname").val(productname);
+        $("#oquantity").val("");
+        $("#odistributorname").val("");
+        $("#oproductid").val(productid);
+        $("#oid").val(id);
+    }
+    function DeleteData(id) {
+
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            data: JSON.stringify({ "id": id }),
+            url: "/Manufacturer/DeleteManufacturers",
+            success: function (result) {
+                //refreshgrid(result[1].Data);
+                refreshgrid(result[1].Data[0], result[0].Message);
+                //ShowNotification('bottom', 'right', result[0].Message);
+            },
+
+        });
+
+    }
+    function OrderManufacturer() {
+        
+        var name = $("#oname").val();
+        var productname = $("#oproductname").val();
+        var productid = $('#oproductList [value="' + productname + '"]').data('value');
+        var distributorname = $("#odistributorname").val();
+        var distributorid = $('#odistributorList [value="' + distributorname + '"]').data('value');
+        var quantity = $("#oquantity").val();
+        var id = $("#oid").val();
+       
+       if (quantity == null || quantity == undefined || quantity == "") {
+            alert("Please enter the quantity");
+            return false;
+       }
+       else if (distributorname == null || distributorname == undefined || distributorname == "") {
+            alert("Please select the distributor");
+            return false;
+        }
+       else if (parseInt(quantity) > actualQuantity) {
+           alert("The maximum quantiy available is : "+ actualQuantity );
+           return false;
+       }
+        else {
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                cache: false,
+                type: 'POST',
+                data: JSON.stringify({ "name": name, "productname": productname, "productid": productid, "quantity": quantity, "id": id, "actualQuantity": actualQuantity - parseInt(quantity), "distributorname": distributorname, "distributorid": distributorid}),
+                url: "/Manufacturer/OrderManufacturers",
+                success: function (result) {
+                    $("#manufacturerOrderModal").modal('hide');
+                    refreshgrid(result[1].Data[0], result[0].Message);
+                },
+                error: function (data) {
+                    ShowNotification('bottom', 'right', "Error. Contact Administrator");
+                }
+            });
+        }
+    }
+    </script>
+<h3>Manufacturer Unit</h3>
+<div>
+    @*<a class="navbar-brand" href="#"> Users </a>*@
+    <button type="submit" class="btn btn-primary pull-right" onclick="AddManufacturer()">Add</button>
+</div>
+
+@*Table*@
+<div class="content" style="margin-top:-30px;">
+    <div class="container-fluid">
+        <div class="row" style="margin-left:-65px;">
+            <div style="width:1048px; overflow: auto;">
+                <table id="manufacturergrid" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:20%;"> Action</th>
+                            <th style="width:30%;"> Name</th>
+                            <th style="width:20%;">Product Name</th>
+                            <th style="width:20%;">Product ID</th>
+                            <th style="width:15%;">Quantity</th>
+                            <th style="width:35%;">Date</th>
+                            <th style="width:15%;"> Order</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="manufacturerModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="submit" class="close" aria-hidden="true" style="width:20px;"><span style="font-size:20px;">X</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title">Add/Edit Manufacturers</h4>
+                        <p class="category">Complete Manufacturer details</p>
+                    </div>
+                    <div class="card-content">
+                        <form>
+                            <input id="id" type="hidden" class="form-control">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Name</label>
+                                        <input id="name" type="text" class="form-control" list="manufacturertList">
+                                        <datalist id="manufacturertList"></datalist>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Product</label>
+                                        <input id="productname" class="form-control" list="productList"/>
+                                            <datalist id="productList">
+
+                                            </datalist>
+                                      
+                                         <input id="productid" type="hidden" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating">
+                                        <label>Quantity</label>
+                                        <input id="quantity" type="number" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            @*<button type="button" class="btn btn-default" data-dismiss="modal" tabindex="3">Close</button>*@
+                            @*<button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Close</button>*@
+                            <button type="submit" class="btn btn-primary pull-right" onclick="SaveManufacturer()">Save</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="manufacturerOrderModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="submit" class="close" data-dismiss="modal" aria-hidden="true" style="width:20px;"><span style="font-size:20px;">X</span> </button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-header" data-background-color="purple">
+                        <h4 class="title">Order Material</h4>
+                        <p class="category">Fill in the quantity required</p>
+                    </div>
+                    <div class="card-content">
+                        <form>
+                            <input id="oid" type="hidden" class="form-control">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Name</label>
+                                        <input id="oname" type="text" class="form-control" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Product</label>
+                                        <input id="oproductname" class="form-control" list="oproductList" disabled />
+                                        <datalist id="oproductList"></datalist>
+
+                                        <input id="oproductid" type="hidden" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group label-floating">
+                                        <label>Distributor</label>
+                                        <input id="odistributorname" class="form-control" list="odistributorList" />
+                                        <datalist id="odistributorList"></datalist>
+
+                                        <input id="odistributorid" type="hidden" class="form-control">
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group label-floating">
+                                        <label>Quantity</label>
+                                        <input id="oquantity" type="number" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            @*<button type="button" class="btn btn-default" data-dismiss="modal" tabindex="3">Close</button>*@
+                            @*<button type="submit" class="btn btn-primary pull-right" data-dismiss="modal">Close</button>*@
+                            <button type="submit" class="btn btn-primary pull-right" onclick="OrderManufacturer()">Order</button>
+                            <div class="clearfix"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

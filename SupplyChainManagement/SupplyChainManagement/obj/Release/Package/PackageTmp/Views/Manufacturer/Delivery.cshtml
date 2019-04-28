@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewBag.Title = "Delivery";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script>
+       $(document).ready(function () {
+        var productstr = "";
+        var customerstr = "";
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            url: "/Manufacturer/GetAllDeliveryDetails",
+            success: function (result) {
+                refreshgrid(result[0], null);
+            },
+            error: function (data) {
+                ShowNotification('bottom', 'right', "Error retrieving details");
+            }
+        });
+    });
+    //Data table methods 
+    var table;
+
+    function refreshgrid(itemlist, message) {
+
+        if (table != undefined && table != null)
+            table.destroy();
+
+        table = $('#deliverygrid').DataTable({
+            data: itemlist,
+            columns: GetColumns(),
+            dom: 'Bfrtip',
+            buttons: [
+                'copy', 'csv', 'excel', 'pdf', 'print'
+            ],
+            "bDestroy": true,
+            select: false,
+            lengthChange: false,
+            "order": [[0, "desc"]],
+            //"scroll": "100"
+            //scrollY: '65vh',
+            //scrollCollapse: true,
+
+        });
+
+        if (message != undefined && message != "" && message != null && message && "undefined")
+            ShowNotification('bottom', 'right', message);
+    }
+    function GetColumns() {
+        var columns = [];
+        columns = [
+            {
+                data: "id",
+
+            },
+
+            { data: "name" },
+            { data: "distributorid" },
+            { data: "distributorname" },
+            { data: "productid" },
+            { data: "productname" },
+            { data: "quantity" },
+            { data: "createdOn" },
+
+            {
+                data: "id",
+                "render": function (data, type, row, meta) {
+                    var a = "";
+                    a = '<a href="#" onclick="DeliverData(\''
+                        + row.name + '\',\''
+                        + row.distributorid + '\',\''
+                        + row.distributorname + '\',\''
+                        + row.productid + '\',\''
+                        + row.productname + '\',\''
+                        + row.quantity + '\',\''
+                        + row.id + '\')">Deliver</a>';
+                    return a;
+                }
+            },
+        ];
+        return columns;
+    }
+    function DeliverData(name, distributorid, distributorname, productid, productname,quantity, id) {
+        $.ajax({
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            cache: false,
+            type: 'POST',
+            data: JSON.stringify({ "name": name, "productname": productname, "productid": productid, "quantity": quantity, "id": id, "distributorname": distributorname, "distributorid": distributorid }),
+            url: "/Manufacturer/DeliverOrder",
+            success: function (result) {
+                $("#distributorTransferModal").modal('hide');
+                refreshgrid(result[1].Data[0], result[0].Message);
+            },
+            error: function (data) {
+                ShowNotification('bottom', 'right', "Error. Contact Administrator");
+            }
+        });
+    }
+</script>
+<h3>Delivery</h3>
+
+<div class="content" style="margin-top:-30px;">
+    <div class="container-fluid">
+        <div class="row" style="margin-left:-65px;">
+            <div style="width:1048px; overflow: auto;">
+                <table id="deliverygrid" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="width:15%;"> ID</th>
+                            <th style="width:20%;">Name</th>
+                            <th style="width:25%;">Dist ID</th>
+                            <th style="width:25%;">Dist Name</th>
+                            <th style="width:15%;">Prod ID</th>
+                            <th style="width:30%;">Prod Name</th>
+                            <th style="width:5%;">Quantity</th>
+                            <th style="width:5%;">Date</th>
+                            <th style="width:5%;"> Deliver</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
